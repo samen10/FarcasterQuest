@@ -3,8 +3,28 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@vercel/static-build"
+      "use": "@vercel/static-build",
+      "config": {
+        "buildCommand": "npm run build" 
+      }
     }
   ],
-  "outputDirectory": "dist"
+  "routes": [
+    // 1. روت برای فایل‌های استاتیک (اجازه سرو کردن مستقیم index.html و assets را می‌دهد)
+    { 
+      "src": "/_next/(.*)", 
+      "dest": "/_next/$1" 
+    },
+    { 
+      "src": "/assets/(.*)", 
+      "dest": "/assets/$1" 
+    },
+    
+    // 2. روت برای تمام API ها و Server-Side Logic
+    // هر درخواستی که با فایل استاتیک مطابقت نداشته باشد، به سرور Express هدایت می‌شود
+    {
+      "src": "/(.*)",
+      "dest": "dist/index.cjs" // فایل کامپایل شده Express شما
+    }
+  ]
 }
